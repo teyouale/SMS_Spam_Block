@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">SMS Spam Block</string>
+    <string name="Message">Message</string>
+    <string name="Black_list">Blacklist</string>
+    <string name="White_list">Whitelist</string>
+    <string name="Journal">Event Log</string>
+    <string name="Setting">Setting</string>
+    <string name="Information">Information</string>
+    <string name="Exit">Exit</string>
+    <string name="hello_blank_fragment">hello_blank_fragment</string>
 </resources>

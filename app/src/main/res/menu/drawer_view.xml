@@ -17,6 +17,9 @@
             android:id="@+id/nav_Information"
             android:title="Information" />
         <item
+            android:id="@+id/nav_Journal"
+            android:title="Information" />
+        <item
             android:id="@+id/exit"
             android:title="Exit" />
     </group>
