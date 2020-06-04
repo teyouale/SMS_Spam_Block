@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_Message"
+            android:title="Message" />
+        <item
+            android:id="@+id/nav_BlackList"
+            android:title="BlackList" />
+        <item
+            android:id="@+id/nav_WhiteList"
+            android:title="WhiteList" />
+        <item
+            android:id="@+id/nav_Setting"
+            android:title="Setting" />
+        <item
+            android:id="@+id/nav_Information"
+            android:title="Information" />
+        <item
+            android:id="@+id/exit"
+            android:title="Exit" />
+    </group>
+</menu>
