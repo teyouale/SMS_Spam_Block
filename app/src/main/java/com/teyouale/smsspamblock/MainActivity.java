@@ -29,8 +29,13 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
 
     private ActionBarDrawerToggle drawerToggle;
 
+    private String Current_Fragment = null;
+    private Fragment selectedFragment;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -48,6 +53,22 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         //setup Drawer View
         setupDrawerContent(navigationView);
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // If there is Any Screen Rotation or Instance(State) Change
+        if(savedInstanceState != null){
+            selectedFragment = getSupportFragmentManager().getFragment(savedInstanceState,Current_Fragment);
+            fragmentManager.beginTransaction().replace(R.id.flContent, selectedFragment).commit();
+        }
+        else {
+            Class fragmentClass = SMSConversatonListFragment.class;
+            try {
+                fragmentManager.beginTransaction().replace(R.id.flContent, (Fragment) fragmentClass.newInstance()).commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -61,6 +82,12 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
                 });
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState,Current_Fragment,selectedFragment);
+    }
+
     private void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
@@ -70,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         Bundle arguments = (bundle != null ? new Bundle(bundle) : new Bundle());
         switch(menuItem.getItemId()) {
             case R.id.nav_Message:
-                // Paassing Argument For New Fragment
+                // Passing Argument For New Fragment
                 arguments.putString(TITLE,getString(R.string.Message));
                 fragmentClass = SMSConversatonListFragment.class;
                 break;
@@ -104,16 +131,16 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         }
 
         try {
+            selectedFragment = (Fragment) fragmentClass.newInstance();
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         // Insert the fragment by replacing any existing fragment
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragment.setArguments(arguments);
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.flContent, selectedFragment).commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
@@ -121,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawerLayout.closeDrawers();
+
     }
 
     @Override
