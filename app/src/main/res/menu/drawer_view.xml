@@ -3,24 +3,24 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_Message"
-            android:title="Message" />
+            android:title="@string/Message" />
         <item
             android:id="@+id/nav_BlackList"
-            android:title="BlackList" />
+            android:title="@string/Black_list" />
         <item
             android:id="@+id/nav_WhiteList"
-            android:title="WhiteList" />
+            android:title="@string/White_list" />
         <item
             android:id="@+id/nav_Setting"
-            android:title="Setting" />
+            android:title="@string/Setting" />
         <item
             android:id="@+id/nav_Information"
-            android:title="Information" />
+            android:title="@string/Information" />
         <item
             android:id="@+id/nav_Journal"
-            android:title="Information" />
+            android:title="@string/Journal" />
         <item
             android:id="@+id/exit"
-            android:title="Exit" />
+            android:title="@string/Exit" />
     </group>
 </menu>

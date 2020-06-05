@@ -30,12 +30,12 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
     private ActionBarDrawerToggle drawerToggle;
 
     private String Current_Fragment = null;
+    private String Current_Title = null;
     private Fragment selectedFragment;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -58,12 +58,17 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         // If there is Any Screen Rotation or Instance(State) Change
         if(savedInstanceState != null){
             selectedFragment = getSupportFragmentManager().getFragment(savedInstanceState,Current_Fragment);
+            Current_Title = savedInstanceState.getString(TITLE);
+            setTitle(Current_Title);
             fragmentManager.beginTransaction().replace(R.id.flContent, selectedFragment).commit();
         }
         else {
             Class fragmentClass = SMSConversatonListFragment.class;
             try {
-                fragmentManager.beginTransaction().replace(R.id.flContent, (Fragment) fragmentClass.newInstance()).commit();
+                Current_Title =getString(R.string.Message);
+                setTitle(Current_Title);
+                selectedFragment = (Fragment) fragmentClass.newInstance();
+                fragmentManager.beginTransaction().replace(R.id.flContent,selectedFragment).commit();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -86,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         getSupportFragmentManager().putFragment(outState,Current_Fragment,selectedFragment);
+        outState.putString(TITLE,Current_Title);
     }
 
     private void selectDrawerItem(MenuItem menuItem) {
@@ -131,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         }
 
         try {
+            Current_Title = arguments.getString(TITLE);
             selectedFragment = (Fragment) fragmentClass.newInstance();
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {

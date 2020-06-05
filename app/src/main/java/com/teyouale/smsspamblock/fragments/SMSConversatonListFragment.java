@@ -8,13 +8,14 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.teyouale.smsspamblock.R;
+import com.teyouale.smsspamblock.utils.FragmentConstants;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SMSConversatonListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SMSConversatonListFragment extends Fragment {
+public class SMSConversatonListFragment extends Fragment implements FragmentConstants {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
