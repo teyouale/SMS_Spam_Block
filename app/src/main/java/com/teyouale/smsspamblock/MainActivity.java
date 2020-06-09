@@ -1,10 +1,8 @@
 package com.teyouale.smsspamblock;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -42,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Requesting A Permission
-        Permissions.checkAndRequest(this);
+        Permissions.check(this);
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -82,16 +80,7 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
     // OnPermissions Result
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1)  {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // if it's Granted
-                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
-            } else {
-                // if Denied
-                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
-            }
-        }
+      Permissions.onRequestPermissionsResult(requestCode, permissions, grantResults,this);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
