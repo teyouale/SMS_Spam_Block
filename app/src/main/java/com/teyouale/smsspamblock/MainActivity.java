@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Requesting A Permission
-        Permissions.check(this);
+        Permissions.checkAndRequest(this);
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

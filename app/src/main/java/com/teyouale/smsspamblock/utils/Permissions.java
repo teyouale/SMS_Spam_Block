@@ -1,17 +1,15 @@
 package com.teyouale.smsspamblock.utils;
 
-import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import java.util.ArrayList;
@@ -23,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
+import static com.teyouale.smsspamblock.utils.Utils.showDialog;
 
 
 public class Permissions {
@@ -50,7 +49,7 @@ public class Permissions {
     private static final int REQUEST_CODE = (Permissions.class.hashCode() & 0xffff);
 
     // Checking Permission Status
-    public static boolean isPermissionGranted(Activity context, String permission) {
+    public static boolean isPermissionGranted(Context context, String permission) {
         // Check the Platform
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             // it Granted On Installation Time
@@ -64,44 +63,10 @@ public class Permissions {
         }
         return result;
     }
-
-    // Requesting Permissions
-    public static void checkAndRequest(@NonNull final Activity context) {
-        // Check the Platform
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Check the Permission
-            if (checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
-                //Permissions/is Already available
-                Log.d(TAG, "checkAndRequest: Permission is Available now");
-            }
-            // Explain to the user Why app requires a permissions
-            else if (ActivityCompat.shouldShowRequestPermissionRationale(context, RECEIVE_SMS)) {
-                new AlertDialog.Builder(context)
-                        .setTitle("Permission needed")
-                        .setMessage("This permission is needed because of this and that")
-                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(context,
-                                        new String[]{RECEIVE_SMS}, REQUEST_CODE);
-                            }
-                        })
-                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create().show();
-            }
-            // Requesting a Permission
-            else {
-                ActivityCompat.requestPermissions(context, new String[]{RECEIVE_SMS}, REQUEST_CODE);
-            }
-        }
-    }
-
-    public static void check(@NonNull final Activity context) {
+    /**
+     * Checks for permissions and Request  permission for Denied
+     **/
+    public static void checkAndRequest(@NonNull final Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             List<String> permissions = new LinkedList<>();
             for (String permission : PERMISSIONS) {
@@ -111,12 +76,15 @@ public class Permissions {
             }
             if (!permissions.isEmpty()) {
                 String[] array = permissions.toArray(new String[permissions.size()]);
-                ActivityCompat.requestPermissions(context, array, REQUEST_CODE);
+                ActivityCompat.requestPermissions((Activity) context, array, REQUEST_CODE);
             }
         }
     }
 
-    public static void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, final Activity context) {
+    /**
+     * On Permission Denied
+     **/
+    public static void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, final Context context) {
         if (requestCode == REQUEST_CODE && permissions.length == grantResults.length) {
             HashMap<String, Integer> ps = new HashMap<>();
             int deniedCount = 0;
@@ -128,33 +96,33 @@ public class Permissions {
                 }
             }
             if (deniedCount == 0) {
-                // process
+                // All Permission are Granted
             } else {
                 for (Map.Entry<String, Integer> entry : ps.entrySet()) {
                     String permName = entry.getKey();
                     int permResult = entry.getValue();
 
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(context, permName)) {
-
-                        showDialog(context, "", "This App needs This Permissiion", "Yes ,Grant Permission",
+                    if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, permName)) {
+                        // AlertDialog Box
+                        showDialog((Activity) context, "", "This App needs This Permissiion", "Yes ,Grant Permission",
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        check(context);
+                                        checkAndRequest(context);
                                     }
                                 }, "No Exit App", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        context.finish();
+                                        ((Activity) context).finish();
                                     }
                                 }
                                 ,false
                         );
                     }
                     else {
-                        showDialog(context, "", "You Have Denied Some Permissions Allow all permission at Setting ->Permission",
+                        showDialog((Activity) context, "", "You Have Denied Some Permissions Allow all permission at Setting ->Permission",
                                 "Go to the Setting",
                                 new DialogInterface.OnClickListener() {
                                     @Override
@@ -166,13 +134,13 @@ public class Permissions {
                                                 Uri.fromParts("package",context.getPackageName(),null));
                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         context.startActivity(intent);
-                                        context.finish();
+                                        ((Activity) context).finish();
                                     }
                                 }, "No Exit App", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        context.finish();
+                                        ((Activity) context).finish();
                                     }
                                 }
                                 ,false);
@@ -183,16 +151,33 @@ public class Permissions {
 
         }
     }
-    public static AlertDialog showDialog(Activity context, String title, String msg, String postiveLable,
-                                         DialogInterface.OnClickListener positivrOnClick,
-                                         String negativeLabel, DialogInterface.OnClickListener negativeOnClick, boolean isCanceAble) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(title).setCancelable(isCanceAble).setMessage(msg)
-                .setPositiveButton(postiveLable, positivrOnClick)
-                .setNegativeButton(negativeLabel, negativeOnClick);
 
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        return alertDialog;
+    /**
+     * In Case it Needed
+     **/
+    public static boolean notifyIfNotGranted(@NonNull final Context context, @NonNull String permission) {
+        if (!isPermissionGranted(context, permission)) {
+            showDialog((Activity) context, "", "This App needs This Permissiion", "Yes ,Grant Permission",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            checkAndRequest(context);
+                        }
+                    }, "No Exit App", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            ((Activity) context).finish();
+                        }
+                    }
+                    ,false
+            );
+            return true;
+        }
+        return false;
     }
+
+
+
 }
