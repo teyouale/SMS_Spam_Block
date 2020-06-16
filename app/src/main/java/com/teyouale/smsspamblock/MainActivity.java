@@ -41,7 +41,10 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         setContentView(R.layout.activity_main);
         // Requesting A Permission
         Permissions.checkAndRequest(this);
-        // Set a Toolbar to replace the ActionBar.
+
+       /* Set a Toolbar to replace the ActionBar. But We implement in all fragment
+
+        */
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
