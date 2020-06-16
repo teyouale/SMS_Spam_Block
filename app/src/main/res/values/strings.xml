@@ -8,4 +8,12 @@
     <string name="Information">Information</string>
     <string name="Exit">Exit</string>
     <string name="hello_blank_fragment">hello_blank_fragment</string>
+    <string name="From_contacts_list">From_contacts_list</string>
+    <string name="From_calls_list">From_contacts_list</string>
+    <string name="From_SMS_list">From_SMS_list</string>
+    <string name="From_Black_list">From_Black_list</string>
+    <string name="From_White_list">From_White_list</string>
+    <string name="Manually">Manually</string>
+    <string name="Add_contact">Add_contact</string>
+    <string name="List_of_contacts">List_of_contacts</string>
 </resources>

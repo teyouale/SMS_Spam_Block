@@ -62,14 +62,14 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
             selectedFragment = getSupportFragmentManager().getFragment(savedInstanceState, Current_Fragment);
             Current_Title = savedInstanceState.getString(TITLE);
             setTitle(Current_Title);
-            fragmentManager.beginTransaction().replace(R.id.flContent, selectedFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.frame_layout, selectedFragment).commit();
         } else {
             Class fragmentClass = SMSConversatonListFragment.class;
             try {
                 Current_Title = getString(R.string.Message);
                 setTitle(Current_Title);
                 selectedFragment = (Fragment) fragmentClass.newInstance();
-                fragmentManager.beginTransaction().replace(R.id.flContent, selectedFragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.frame_layout, selectedFragment).commit();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -117,12 +117,12 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
             case R.id.nav_BlackList:
                 fragmentClass = ContactsFragment.class;
                 arguments.putString(TITLE, getString(R.string.Black_list));
-                arguments.putString(CONTACT_TYPE, getString(R.string.Black_list)); // Later it Will Be Changed By Constant Number
+                arguments.putInt(CONTACT_TYPE, TYPE_BLACK_LIST);
                 break;
             case R.id.nav_WhiteList:
                 fragmentClass = ContactsFragment.class;
                 arguments.putString(TITLE, getString(R.string.White_list));
-                arguments.putString(CONTACT_TYPE, getString(R.string.White_list));
+                arguments.putInt(CONTACT_TYPE, TYPE_WHITE_LIST);
                 break;
             case R.id.nav_Information:
                 fragmentClass = InformationFragment.class;
@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
 
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragment.setArguments(arguments);
-        fragmentManager.beginTransaction().replace(R.id.flContent, selectedFragment).commit();
+        selectedFragment.setArguments(arguments);
+        fragmentManager.beginTransaction().replace(R.id.frame_layout, selectedFragment).commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);

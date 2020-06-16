@@ -15,4 +15,6 @@ public interface FragmentConstants {
     String SINGLE_NUMBER_MODE = "SINGLE_NUMBER_MODE";
     String SMS_MESSAGE_BODY = "SMS_MESSAGE_BODY";
     String LIST_POSITION = "LIST_POSITION";
+    int TYPE_BLACK_LIST = 1;
+    int TYPE_WHITE_LIST = 2;
 }
