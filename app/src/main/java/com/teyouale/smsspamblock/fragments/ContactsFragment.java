@@ -1,64 +1,128 @@
 package com.teyouale.smsspamblock.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 
 import com.teyouale.smsspamblock.R;
+import com.teyouale.smsspamblock.utils.FragmentConstants;
+import com.teyouale.smsspamblock.utils.Utils;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ContactsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ContactsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class ContactsFragment extends Fragment implements FragmentConstants {
+    private int contactType = 0;
+    private String itemsFilter = null;
+    private ListView listView = null;
+    private int listPosition = 0;
 
     public ContactsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ContactsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ContactsFragment newInstance(String param1, String param2) {
-        ContactsFragment fragment = new ContactsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // set activity title
+        Bundle arguments = getArguments();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (arguments != null && actionBar != null) {
+            actionBar.setTitle(arguments.getString(TITLE));
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            contactType = arguments.getInt(CONTACT_TYPE, 0);
+        }
+        /*  To Implement Save On instance
+            if (savedInstanceState != null) {
+                listPosition = savedInstanceState.getInt(LIST_POSITION, 0);
+            }*/
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_contacts, container, false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main,menu);
+
+        // tune menu options
+        MenuItem itemSearch = menu.findItem(R.id.action_search);
+        itemSearch.setVisible(true);
+        MenuItem itemAdd = menu.findItem(R.id.action_add);
+        itemAdd.setVisible(true);
+
+        // get the view from search menu item
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
+        searchView.setQueryHint("Search_action");
+        // set on text change listener
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                reloadItems(newText);
+                return true;
+            }
+        });
+
+        // on search cancelling
+        // SearchView.OnCloseListener is not calling so use other way...
+        MenuItemCompat.setOnActionExpandListener(itemSearch,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        reloadItems(null);
+                        return true;
+                    }
+                });
+
+        // item's 'add contact' on click listener
+        itemAdd.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // show menu dialog
+                //showAddContactsMenuDialog();
+
+                return true;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    // Reloads items
+    private void reloadItems(String itemsFilter) {
+        Utils.showToast((Activity) getContext(),"Search Change", 1);
     }
 }

@@ -2,6 +2,7 @@ package com.teyouale.smsspamblock.utils;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -20,5 +21,11 @@ public class Utils {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         return alertDialog;
+    }
+
+    public static Toast showToast(Activity context, String message,int duration){
+        Toast toast = Toast.makeText(context,message,duration);
+        toast.show();
+        return toast;
     }
 }
