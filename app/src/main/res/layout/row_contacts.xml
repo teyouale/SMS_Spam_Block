@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.teyouale.smsspamblock.utils.CheckableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/contact_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp" />
+
+            <TextView
+                android:id="@+id/contact_numbers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/contact_cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:button="@drawable/selector_checkbox"
+            android:clickable="false"
+            android:padding="4dp"
+            app:buttonTint="@color/design_default_color_on_secondary" />
+
+    </LinearLayout>
+
+
+
+</com.teyouale.smsspamblock.utils.CheckableLinearLayout>
+

@@ -19,6 +19,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 
+import com.teyouale.smsspamblock.ContactsAccessHelper.ContactSourceType;
 import com.teyouale.smsspamblock.R;
 import com.teyouale.smsspamblock.utils.DialogBuilder;
 import com.teyouale.smsspamblock.utils.FragmentConstants;
@@ -137,40 +138,40 @@ public class ContactsFragment extends Fragment implements FragmentConstants {
                         showAddContactsActivity(Permissions.READ_CONTACTS,
                                 ContactSourceType.FROM_CONTACTS,
                                 R.string.List_of_contacts);
-                    }
+                        }
                 }).
                 addItem(R.string.From_calls_list, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /*showAddContactsActivity(Permissions.READ_CALL_LOG,
+                        showAddContactsActivity(Permissions.READ_CALL_LOG,
                                 ContactSourceType.FROM_CALLS_LOG,
-*/                              //  R.string.List_of_calls);
+                               R.string.List_of_calls);
                     }
                 }).
                 addItem(R.string.From_SMS_list, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /*showAddContactsActivity(Permissions.READ_SMS,
+                        showAddContactsActivity(Permissions.READ_SMS,
                                 ContactSourceType.FROM_SMS_LIST,
- */                           //    R.string.List_of_SMS);
+                                R.string.List_of_SMS);
                     }
                 });
         if (contactType == TYPE_WHITE_LIST) {
             dialog.addItem(R.string.From_Black_list, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*showAddContactsActivity(Permissions.WRITE_EXTERNAL_STORAGE,
-                            ContactSourceType.FROM_BLACK_LIST,*/
-                            //R.string.Black_list);
+                    showAddContactsActivity(Permissions.WRITE_EXTERNAL_STORAGE,
+                            ContactSourceType.FROM_BLACK_LIST,
+                            R.string.Black_list);
                 }
             });
         } else {
             dialog.addItem(R.string.From_White_list, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*showAddContactsActivity(Permissions.WRITE_EXTERNAL_STORAGE,
-                            ContactSourceType.FROM_WHITE_LIST,*/
-                         //   R.string.White_list);
+                    showAddContactsActivity(Permissions.WRITE_EXTERNAL_STORAGE,
+                            ContactSourceType.FROM_WHITE_LIST,
+                            R.string.White_list);
                 }
             });
         }
@@ -211,14 +212,6 @@ public class ContactsFragment extends Fragment implements FragmentConstants {
                 getString(titleId), fragmentClass, arguments, 0);
     }
 
-    // Types of contact sources
-    public enum ContactSourceType {
-        FROM_CONTACTS,
-        FROM_CALLS_LOG,
-        FROM_SMS_LIST,
-        FROM_BLACK_LIST,
-        FROM_WHITE_LIST
-    }
 
     // Reloads items
     private void reloadItems(String itemsFilter) {
