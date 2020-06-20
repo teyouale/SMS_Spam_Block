@@ -56,6 +56,14 @@ public class AddContactsFragment extends Fragment implements FragmentConstants {
         super.onViewCreated(view, savedInstanceState);
 
         cursorAdapter = new ContactsCursorAdapter(getContext());
+
+        cursorAdapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               }
+
+        });
         // add cursor listener to the list
         ListView listView = view.findViewById(R.id.contacts_list);
         listView.setAdapter(cursorAdapter);
@@ -73,6 +81,9 @@ public class AddContactsFragment extends Fragment implements FragmentConstants {
     private ContactsLoaderCallbacks newLoaderCallbacks(String itemsFilter) {
         return new ContactsLoaderCallbacks(getContext(), sourceType, cursorAdapter, itemsFilter);
     }
+
+
+
 
     // Contact items loader
     private static class ContactsLoader extends CursorLoader {

@@ -32,7 +32,7 @@
 
         </LinearLayout>
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/contact_cb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,6 +41,8 @@
             android:clickable="false"
             android:padding="4dp"
             app:buttonTint="@color/design_default_color_on_secondary" />
+
+
 
     </LinearLayout>
 

@@ -1,6 +1,7 @@
 package com.teyouale.smsspamblock.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -8,14 +9,16 @@ import android.widget.TextView;
 import com.teyouale.smsspamblock.R;
 import com.teyouale.smsspamblock.utils.CheckableLinearLayout;
 import com.teyouale.smsspamblock.utils.DatabaseAccessHelper;
+import com.teyouale.smsspamblock.utils.IdentifiersContainer;
 
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class ViewHolder {
-    private StringBuilder sb = new StringBuilder();
 
+    private StringBuilder sb = new StringBuilder();
+    public IdentifiersContainer identifiersContainer;
     private DatabaseAccessHelper.Contact contact;
     private int itemId;
     private CheckableLinearLayout rowView;
@@ -38,6 +41,7 @@ public class ViewHolder {
         this.nameTextView = nameTextView;
         this.numbersTextView = numbersTextView;
         this.checkBox = checkBox;
+        identifiersContainer =  ContactsCursorAdapter.getIdentifiersContainer();
     }
 
     void setModel(Context context, DatabaseAccessHelper.Contact contact) {
@@ -85,17 +89,17 @@ public class ViewHolder {
     }
 
 
-    private void toggle() {
+    void toggle() {
         setChecked(!isChecked());
+        Log.d("TAG", "toggle: " + identifiersContainer.getSize());
     }
 
-    private boolean isChecked() {
-//        return checkedItems.contains(itemId);
-        return false;
+    boolean isChecked() {
+        return identifiersContainer.contains(itemId);
     }
 
     private void setChecked(boolean checked) {
-        //checkedItems.set(itemId, checked);
+        identifiersContainer.set(itemId, checked);
         checkBox.setChecked(checked);
         rowView.setChecked(checked);
     }
@@ -118,4 +122,6 @@ public class ViewHolder {
         }
         return "";
     }
+
+
 }
