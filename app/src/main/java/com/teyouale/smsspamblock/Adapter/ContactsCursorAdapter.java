@@ -2,6 +2,7 @@ package com.teyouale.smsspamblock.Adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.cursoradapter.widget.CursorAdapter;
 
 import com.teyouale.smsspamblock.R;
 import com.teyouale.smsspamblock.utils.DatabaseAccessHelper;
+import com.teyouale.smsspamblock.utils.DatabaseAccessHelper.Contact;
 import com.teyouale.smsspamblock.utils.IdentifiersContainer;
 
 public class ContactsCursorAdapter extends CursorAdapter {
@@ -73,6 +75,34 @@ public class ContactsCursorAdapter extends CursorAdapter {
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
         this.outerOnClickListener = onClickListener;
+    }
+
+    // Returns true if there are some checked items
+    public boolean hasCheckedItems() {
+        Log.d("TAG", "hasCheckedItems: " + checkedItems.getSize());
+        return checkedItems.getSize() > 0;
+    }
+
+    public void setAllItemsChecked(boolean checked) {
+        if(checkedItems.setAll(checked)){
+            notifyDataSetChanged();
+        }
+    }
+
+    public boolean isItemChecked(View row) {
+        if(row != null){
+            ViewHolder viewHolder = (ViewHolder) row.getTag();
+            return viewHolder.isChecked();
+        }
+        return false;
+    }
+
+    public Contact getContact(View row) {
+        if(row != null){
+            ViewHolder viewHolder = (ViewHolder) row.getTag();
+            return viewHolder.contact;
+        }
+        return null;
     }
 
 

@@ -18,4 +18,8 @@
     <string name="List_of_contacts">List_of_contacts</string>
     <string name="List_of_calls">List_of_calls</string>
     <string name="List_of_SMS">List_of_SMS</string>
+    <string name="CANCEL">CANCEL</string>
+    <string name="ADD">ADD</string>
+    <string name="SELECT_ALL">Select All</string>
+    <string name="Clear">Clear</string>
 </resources>

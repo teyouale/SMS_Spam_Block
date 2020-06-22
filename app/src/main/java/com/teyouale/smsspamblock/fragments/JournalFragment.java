@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.teyouale.smsspamblock.R;
+import com.teyouale.smsspamblock.utils.ButtonsBar;
 import com.teyouale.smsspamblock.utils.FragmentConstants;
 
 /**
@@ -23,6 +24,7 @@ public class JournalFragment extends Fragment implements FragmentConstants {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public ButtonsBar snackBar = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;

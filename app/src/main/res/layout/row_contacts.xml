@@ -41,9 +41,6 @@
             android:clickable="false"
             android:padding="4dp"
             app:buttonTint="@color/design_default_color_on_secondary" />
-
-
-
     </LinearLayout>
 
 

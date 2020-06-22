@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.teyouale.smsspamblock.R;
 import com.teyouale.smsspamblock.utils.CheckableLinearLayout;
 import com.teyouale.smsspamblock.utils.DatabaseAccessHelper;
+import com.teyouale.smsspamblock.utils.DatabaseAccessHelper.Contact;
 import com.teyouale.smsspamblock.utils.IdentifiersContainer;
 
 import java.util.List;
@@ -17,14 +18,14 @@ import java.util.TreeSet;
 
 public class ViewHolder {
 
-    private StringBuilder sb = new StringBuilder();
+    public StringBuilder sb = new StringBuilder();
+    public Contact contact;
     public IdentifiersContainer identifiersContainer;
-    private DatabaseAccessHelper.Contact contact;
-    private int itemId;
-    private CheckableLinearLayout rowView;
-    private TextView nameTextView;
-    private TextView numbersTextView;
-    private CheckBox checkBox;
+    public int itemId;
+    public CheckableLinearLayout rowView;
+    public TextView nameTextView;
+    public TextView numbersTextView;
+    public CheckBox checkBox;
 
     ViewHolder(Context context, View row) {
         this(context, (CheckableLinearLayout) row,

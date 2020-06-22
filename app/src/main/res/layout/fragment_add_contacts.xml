@@ -5,6 +5,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
+
     <TextView
         android:id="@+id/text_empty"
         android:layout_width="match_parent"
@@ -17,13 +18,13 @@
         android:id="@+id/contacts_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:choiceMode="none"
-        android:fastScrollEnabled="true"
-        />
-
+        android:fastScrollEnabled="true"/>
     <include
         layout="@layout/three_row_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 
 </LinearLayout>
