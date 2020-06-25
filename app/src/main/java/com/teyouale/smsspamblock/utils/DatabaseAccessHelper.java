@@ -548,6 +548,26 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    // Deletes all contacts which are specified in container with specified type
+    public int deleteContacts(int contactType, IdentifiersContainer contactIds, @Nullable String filter) {
+        if (contactIds.isEmpty()) return 0;
+
+        boolean all = contactIds.isAll();
+        List<String> ids = contactIds.getIdentifiers(new LinkedList<String>());
+
+        // build 'WHERE' clause
+        String clause = Common.concatClauses(new String[]{
+                ContactTable.Column.TYPE + " = " + contactType,
+                Common.getLikeClause(ContactTable.Column.NAME, filter),
+                Common.getInClause(ContactTable.Column.ID, all, ids)
+        });
+
+        // delete contacts
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete(ContactTable.NAME, clause, null);
+    }
+
+
     // Source of the contact
     public interface ContactSource {
         Contact getContact();

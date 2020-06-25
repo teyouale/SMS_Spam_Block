@@ -2,7 +2,9 @@ package com.teyouale.smsspamblock.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,11 +27,16 @@ import com.teyouale.smsspamblock.ContactsAccessHelper;
 import com.teyouale.smsspamblock.ContactsAccessHelper.ContactSourceType;
 import com.teyouale.smsspamblock.R;
 import com.teyouale.smsspamblock.utils.ButtonsBar;
+import com.teyouale.smsspamblock.utils.DatabaseAccessHelper;
 import com.teyouale.smsspamblock.utils.DatabaseAccessHelper.Contact;
 import com.teyouale.smsspamblock.utils.DatabaseAccessHelper.ContactNumber;
+import com.teyouale.smsspamblock.utils.DialogBuilder;
 import com.teyouale.smsspamblock.utils.FragmentConstants;
+import com.teyouale.smsspamblock.utils.Permissions;
+import com.teyouale.smsspamblock.utils.ProgressDialogHolder;
 import com.teyouale.smsspamblock.utils.Utils;
 
+import java.util.List;
 
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -128,8 +135,7 @@ public class AddContactsFragment extends Fragment implements FragmentConstants {
                     Utils.showToast((Activity) getContext(),"is checked", 1);
                     Contact contact = cursorAdapter.getContact(row);
                     if(contact != null && contact.numbers.size() > 1){
-
-                        //askForSingleContactNumber(contact);
+                        askForSingleContactNumber(contact);
                     }
                 }
 
@@ -143,12 +149,63 @@ public class AddContactsFragment extends Fragment implements FragmentConstants {
         TextView textEmptyView = view.findViewById(R.id.text_empty);
         listView.setEmptyView(textEmptyView);
 
+
         // init and run the loader of contacts
         getLoaderManager().initLoader(0, null, newLoaderCallbacks(null));
 
     }
+    @Override
+    public void onDestroyView() {
+        getLoaderManager().destroyLoader(0);
+        super.onDestroyView();
+    }
+
+    private void askForSingleContactNumber(final Contact contact) {
+        DialogBuilder dialog = new DialogBuilder(getContext());
+        dialog.setTitle(contact.name);
+        for (ContactNumber contactNumber : contact.numbers) {
+            dialog.addItem(0, contactNumber.number, contactNumber, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ContactNumber contactNumber = (ContactNumber) v.getTag();
+                    if (contactNumber != null) {
+                        singleContactNumbers.put(contact.id, contactNumber);
+                    }
+                }
+            });
+        }
+        if (contact.numbers.size() > 1) {
+            dialog.addItem(0, "Select_all", null, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    singleContactNumbers.remove(contact.id);
+                }
+            });
+        }
+        dialog.show();
+
+    }
+
+    // Clears all items selection
+    private void clearCheckedItems() {
+        singleContactNumbers.clear();
+        if (cursorAdapter != null) {
+            cursorAdapter.setAllItemsChecked(false);
+        }
+    }
 
     private void addCheckedContacts() {
+        // get list of contacts and write it to the DB
+        List<Contact> contacts = cursorAdapter.extractCheckedContacts();
+        addContacts(contacts, singleContactNumbers);
+    }
+
+    private void addContacts(List<Contact> contacts, LongSparseArray<ContactNumber> singleContactNumbers) {
+        // if permission is granted
+        if (!Permissions.notifyIfNotGranted(getContext(), Permissions.WRITE_EXTERNAL_STORAGE)) {
+            ContactsWriter writer = new ContactsWriter(contactType, contacts, singleContactNumbers.clone());
+            writer.execute();
+        }
     }
 
     private void setUnCheckedAllItems() {
@@ -237,4 +294,69 @@ public class AddContactsFragment extends Fragment implements FragmentConstants {
         }
     }
 
+    // Async task - writes contacts to the DB
+    private class ContactsWriter extends AsyncTask<Void, Integer, Void> {
+        ProgressDialogHolder progress = new ProgressDialogHolder();
+        List<Contact> contacts;
+        LongSparseArray<ContactNumber> singleContactNumbers;
+        private int contactType;
+
+        ContactsWriter(int contactType, List<Contact> contacts,
+                       LongSparseArray<ContactNumber> singleContactNumbers) {
+            this.contactType = contactType;
+            this.contacts = contacts;
+            this.singleContactNumbers = singleContactNumbers;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            DatabaseAccessHelper db = DatabaseAccessHelper.getInstance(getContext());
+            if (db != null) {
+                int count = 1;
+                for (Contact contact : contacts) {
+                    if (isCancelled()) break;
+                    ContactNumber contactNumber = singleContactNumbers.get(contact.id);
+                    if (contactNumber != null) {
+                        // add only the single number of contact
+                        db.addContact(contactType, contact.name, contactNumber);
+                        publishProgress(100 / contacts.size() * count++);
+                    } else {
+                        // add all numbers of contact
+                        db.addContact(contactType, contact.name, contact.numbers);
+                        publishProgress(100 / contacts.size() * count++);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            progress.dismiss();
+            finishActivity(Activity.RESULT_OK);
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            progress.dismiss();
+            finishActivity(Activity.RESULT_OK);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progress.show(getContext(), new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    ContactsWriter.this.cancel(true);
+                }
+            });
+            progress.setMessage("Saving" + " 0%");
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress.setMessage("Saving" + " " + values[0] + "%");
+        }
+    }
 }

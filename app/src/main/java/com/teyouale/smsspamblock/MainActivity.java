@@ -2,9 +2,11 @@ package com.teyouale.smsspamblock;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,6 +14,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 import com.teyouale.smsspamblock.fragments.ContactsFragment;
@@ -102,6 +105,24 @@ public class MainActivity extends AppCompatActivity implements FragmentConstants
         super.onSaveInstanceState(outState);
         getSupportFragmentManager().putFragment(outState, Current_Fragment, selectedFragment);
         outState.putString(TITLE, Current_Title);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 0 && resultCode == RESULT_OK){
+            updateFragment();
+        }
+    }
+
+    private void updateFragment() {
+        // When There Is Change In the Fragment
+        Log.d(TAG, "updateFragment: " );
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(Current_Fragment);
+            if (selectedFragment != null) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.detach(selectedFragment).attach(selectedFragment).commit();
+            }
     }
 
     private void selectDrawerItem(MenuItem menuItem) {

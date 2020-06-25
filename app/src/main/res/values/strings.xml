@@ -22,4 +22,15 @@
     <string name="ADD">ADD</string>
     <string name="SELECT_ALL">Select All</string>
     <string name="Clear">Clear</string>
+    <string name="Starts_with">Starts_with</string>
+    <string name="Ends_with">Ends_with</string>
+    <string name="Contains">Contains</string>
+    <string name="DELETE">DELETE</string>
+    <string name="Edit_contact">Edit_contact</string>
+    <string name="Remove_contact">Remove_contact</string>
+    <string name="Move_to_black_list">Move_to_black_list</string>
+    <string name="Move_to_white_list">Move_to_black_list</string>
+    <string name="Search_action">Search_action</string>
+    <string name="Editing_contact">Editing_contact</string>
+    <string name="Adding_contact">Adding_contact</string>
 </resources>
